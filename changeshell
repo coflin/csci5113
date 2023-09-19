@@ -1,0 +1,11 @@
+#!/bin/bash
+touch /etc/profile.d/custom.sh
+echo "umask 007" > /etc/profile.d/custom.sh
+echo "umask 007" >> /root/.bashrc
+IFS=''
+while read line;
+do
+	username=$(echo $line | awk '{print $1}')
+	usermod -s /bin/bash $username
+done < ~/lab3/employees
+usermod abernard -G sales

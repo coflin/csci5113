@@ -1,0 +1,84 @@
+#!/bin/bash
+
+function permissions(){
+	sudo mkdir /home/$1
+        sudo chown root /home/$1
+        sudo chgrp $1 /home/$1
+        sudo chmod 2770 /home/$1
+}
+
+IFS=''
+i=6000
+
+while read line;
+do
+	username=$(echo $line | awk '{print $1}')
+	fullname=$(echo $line | awk '{print $2 " " $3}')
+	if [ -f "/usr/sbin/groupadd" ];
+	then
+		sudo groupadd --gid $i $username
+	else
+		sudo addgroup -gid $i $username
+	fi
+	if [ -f '/usr/sbin/useradd' ];
+	then
+		sudo useradd -m --home /home/$username --gid $i --uid $i --shell /usr/bin/bash --comment "$fullname" $username
+		sudo chmod 700 /home/$username
+		echo $username:roomtoor | sudo chpasswd
+	else
+		echo roomtoor | pw useradd $username -u $i -s /bin/bash -d /home/$username -c "$fullname" -h 0 -m
+		sudo chmod 700 /home/$username
+	fi
+	((i+=1))
+done < /root/lab3/employees
+
+function creategroups(){
+
+if [ -f "/usr/sbin/groupadd" ];
+then
+	sudo groupadd --gid $2 $1 
+else
+	sudo pw groupadd -g $2 $1
+fi
+}
+creategroups managers 7000
+creategroups sales 7001
+creategroups accounting 7002
+
+managersArray=("mscott" "jhalpert" "dschrute")
+salesArray=("plapin" "shudson")
+accountantsArray=("amartin" "omartinez" "kmalone")
+
+function addmembertogroup(){
+        local -n arr=$1
+        for i in ${arr[@]};
+        do
+                if [ -f /usr/bin/usermod ];then
+                        sudo usermod -a -G $2 $i;
+                else
+                        pw usermod $i -G $2
+                fi
+        done
+}
+addmembertogroup managersArray managers
+addmembertogroup salesArray sales
+addmembertogroup accountantsArray accounting
+
+if [[ $(hostname) ==  "machinex" ]]; then
+	permissions managers
+	permissions sales
+	permissions accounting
+fi
+
+getent group wheel > /dev/null
+if [[ $? == 0 ]];
+then
+	sudo usermod -a -G wheel snir8112
+else
+	sudo usermod -a -G sudo snir8112
+fi
+
+
+#Set umask to 0007
+touch /etc/profile.d/custom.sh
+echo "umask 007" > /etc/profile.d/custom.sh

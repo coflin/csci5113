@@ -1,0 +1,49 @@
+#!/bin/bash
+#Script to remove users, permissions and groups
+
+IFS=''
+while read line;
+do
+	username=$(echo $line | awk '{print $1}')
+	if [ -f /usr/sbin/userdel ];
+	then
+		sudo userdel -r $username
+	else
+		sudo rmuser $username
+	fi
+	getent passwd $username &> /dev/null
+	if [ $? != 0 ];then
+		echo "$username user deleted succesfully"
+	else
+		echo "$username user was not deleted. Try again."
+	fi
+
+	ls -ld /home/$username &> /dev/null
+	if [ $? != 0 ];then
+		echo "$username\'s home directory deleted succesfully"
+	else
+		echo "$username\'s home directory was not deleted. Try again."
+	fi
+	
+done < /root/lab3/employees
+
+function homedel(){
+	sudo rm -rf /home/$1
+	echo "Deleted /home/$1"
+}
+homedel managers
+homedel sales
+homedel accounting
+
+function removegroup(){
+	groupdel $1
+}
+removegroup managers
+removegroup sales
+removegroup accounting
+echo "umask setting... $(umask 022)"
+if [ $(umask) == "022" ]; then 
+       echo "umask set back to 022"
+else
+	echo "umask was not set properly. Please check and try again."
+fi	

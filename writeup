@@ -1,0 +1,18 @@
+./createusers:
+This script creates all the user accounts reading from the 'employee' file which contains the list of all the employees and their usernames.
+It also sets permissions for home directories to rwx only to the owner and no access to group and others. 
+If on machine E, it creates /home{managers,sales,accounting}, populates appropriate owner and group owner. 
+It sets the umask for all users to 0007.
+Adds employees to appropriate groups.
+
+./removeusers:
+The same as createusers, except it removes user accounts mentioned in employees file, their home directories and groups.
+
+./testusers:
+This script is to check if the home directory permissions are set correctly, all user accounts are populated correctly with appropriate 
+values and shells, and the groups are correctly created. 
+It also checks if employees are assigned to appropriate groups.
+It checks if umask is set to 0007.
+
+employees:
+Contains the list of all employees in Dunder-Mifflin with their usernames

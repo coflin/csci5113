@@ -1,0 +1,80 @@
+#!/bin/bash
+#Script to check if everything is working as expected in Lab3
+
+IFS=''
+i=6000
+while read line;
+do
+	username=$(echo $line | awk '{print $1}')
+	fullname=$(echo $line | awk '{print $2 " " $3}')
+	#check if the group and passwd is created correctly
+	usrinfo=$(getent passwd $username)
+	if [[ $usrinfo == "$username:x:$i:$i:$fullname:/home/$username:/bin/bash" ]]; then
+		echo "Info: $username userinfo populated correctly"
+	else
+		echo "Error: $username userinfo not populated correctly"
+		getent passwd $username
+	sleep 1
+	fi
+	usrpvtgrp=$(getent group $username)
+	if [[ $usrpvtgrp =~ $username:.*:$i: ]];then
+		echo "Info: $username groupinfo populated correctly"
+	else
+		echo "Error: $username groupinfo NOT populuated correctly"
+		getent group $username
+	fi
+	sleep 1
+
+	#check if the home dirs have been created
+	permissions=$(ls -ld /home/$username | awk '{print $1}')
+	if [ -d "/home/$username" ] && [[ $permissions =~ drwx------.* ]] ; then
+		echo "Info: $username homedir created successfully"
+	else
+		echo "Error: $username homedir does not exist or homedir permissions mismatched"
+	fi
+	((i+=1))
+done < /root/lab3/employees
+
+echo "Users part of the managers group: $(getent group managers | awk -F: '{print $4}')"
+echo "Users part of the sales group: $(getent group sales | awk -F: '{print $4}')"
+echo "Users part of the accounting group: $(getent group accounting | awk -F: '{print $4}')"
+
+function shareddir(){
+	perms=$(ls -ld /home/$1)
+	if [[ $perms =~ "drwxrws---.*root $1.*" ]];then
+		echo "Info: /home/$1 permissions set correctly"
+	else
+		echo "Error: /home/$1 permissions NOT set correctly"
+		ls -ld /home/$1
+	fi
+}
+if [[ $hostname =~ machinee.* ]];then
+	shareddir managers
+	shareddir sales
+	shareddir accounting
+fi
+
+#check if snir8112 is a part of sudo/wheel group or not
+getent group wheel > /dev/null
+if [[ $? == 0 ]]; then
+	getent group wheel | awk -F: '{print $4}' | grep -w snir8112 > /dev/null
+	if [[ $? == 0 ]]; then
+		echo "Info: snir8112 is a part of wheel and should have sudo access"
+	else
+		echo "Error: snir8112 does not have sudo access. Please add to wheel group"
+	fi
+else
+	getent group sudo | awk -F: '{print $4}' | grep -w snir8112 > /dev/null
+	if [[ $? == 0 ]]; then
+		echo "Info: snir8112 is a part of sudo and should have sudo access"
+	else
+		echo "Error: snir8112 does not have sudo access. Please add to sudo group"
+	fi
+fi
+#Check umask
+if [[ $(umask) == "0007" ]]; then
+	echo "umask set correctly to 0007"
+else
+	echo "umask NOT set correctly."
+	umask
+fi
