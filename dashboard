@@ -1,0 +1,84 @@
+#!/bin/bash
+clear
+
+#Prints the system uptime. Converts to hh:mm format if machine has been up for more than a day. 
+days=$(uptime | awk '{print $3}' | sed -e s/,//g)
+if [ -n "days" ];
+then
+	hours=$(uptime | awk '{print $5}' | awk -F: '{print $1}')
+	minutes=$(uptime | awk '{print $5}' | awk -F: '{print $2}' | sed -e s/,//g)
+	totalhours=$(( $days*24 + $hours ))
+	echo "Uptime: ${totalhours}:${minutes}"
+else
+	echo $days
+fi
+
+#uptime | awk '{print "Uptime: "$3" " $4}' | sed 's/,//g' => to display in days
+
+#Prints CPU load average
+uptime | awk -F: '{print "CPU Load Average:"$NF}'
+
+#FreeBSD does not support the 'free' command unlike Linux Debian and Rocky. Uses 'freecolor' for FreeBSD and 'free' for Rocky and Debian
+if [ -e /usr/local/bin/freecolor ]; then
+	freecolor -m -o | awk 'NR==2 {print "Free RAM: "$4 " MB"}'
+	freecolor -m -o | awk 'NR==3 {print "Swap used: "$3 " MB"}'
+else
+	free -m | awk 'NR==2 {print "Free RAM: "$4 " MB"}'
+	free -m | awk 'NR==3 {print "Swap used: "$3 " MB"}'
+fi
+printf "\n"
+
+#Uses 'ifconfig' for FreeBSD and 'ip addr' for Rocky and Debian. Prints all network interfaces and IP addresses of each
+echo "Interface Address"
+if [ -e /sbin/ifconfig ]; then
+	for interface in $(ifconfig -l); 
+	do 
+		printf "$interface "; 
+		ifconfig $interface | grep -w inet | awk '{print $2}';
+	done | column -t
+else
+	ip addr | awk '{if (/[0123456789]: / || /inet [0123456789]/) print $2}' | xargs -n2 | sed -e 's/:/   /g' | sed -e 's/[/].*//' | column -t
+fi
+
+#Pings google.com to check internet connection and silences the ping output by redirecting it to /dev/null. If ping is successful, internet connectivity is established
+echo -en "Testing Internet Connection"
+ping -c 5 8.8.8.8 > /dev/null 2>&1
+if [ $? == 0 ]; 
+then 
+	echo -en "\rInternet Connectivity: Yes  "; 
+else 
+	echo -en "\rInternet Connectivity: No  ";
+fi
+
+#Checks the number of user accounts in /etc/passwd file and the number of users currently logged in to the system
+echo -e "\n\nUser Accounts"
+(cat /etc/passwd | uniq | echo "Total users: $(wc -l)"
+who | awk '{print $1}' | uniq | echo "Active users: $(wc -l)") | column -t
+echo -e "\n"
+
+#Prints all user's default shells and the number of users with the respective default shell. Retreives this information from /etc/passwd file
+(echo -e "\nShells\t\tUsers\n"
+for shell in $(cat /etc/passwd | awk -F: '{print $7}' | sort | uniq); 
+do 
+	[[ "$shell" =~ \.*nologin$ ]] && continue ; 
+	printf "$shell "; 
+	grep $shell /etc/passwd | wc -l; 
+done) | column -t ;
+
+#Recursively checks in the /boot directory and prints the number of files, directories and symlinks
+files=0;directories=0;symlinks=0
+for file in $(find /boot | awk 'NR != 1 {print}'); 
+do 
+	if [ -f $file ] && [ ! -L $file ]; 
+	then 
+		((files+=1)); 
+	elif [ -d $file ]; 
+	then 
+		((directories+=1)); 
+	elif [ -L $file ]; 
+	then 
+		((symlinks+=1));
+	fi
+done
+echo -e "\nFilesystem /boot"
+(echo -e "Total number of Files: $files\n"; echo -e "Total number of Links: $symlinks\n"; echo -e "Total number of Directories: $directories") | column -t

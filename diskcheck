@@ -1,0 +1,141 @@
+#!/bin/bash
+
+#  Check usage of /, /boot or /tmp every <interval> seconds
+#  Send an email every <mailint> seconds if it exceeds the specified amount
+#  For testing interval=2 and mailint=10
+#  For production set interval=60 and mailint=3600
+
+#  Example usage: ./diskcheck root@localhost  75
+
+# Store the 1st argument supplied by the user while running the diskcheck script in the 'mailto' variable
+# Also, store the 2nd argument in the 'full' variable
+mailto=$1
+full=$2
+
+# Check whether both required arguments are provided:
+# 1. The recipient email address (stored in 'mailto' variable)
+# 2. The disk usage threshold value (stored in 'full' variable)
+# If either argument is empty/NULL/uninitialized, inform the user about the correct command usage
+# The variable $0 represents the current shell or script name.
+if [ -z "$mailto" ] || [ -z "$full" ]; then 
+  echo "Usage: $0 mailto full%"
+  exit 1
+
+# Check whether the user supplied an integer value:
+# Use the [[ expression to match one or more digits (0-9)
+# The '!' inverts the expression, returning true if the match fails.
+elif [[ ! $full =~ ^[0-9]+ ]]; then
+  echo "The full% is not a number"
+  exit 1
+
+# Check whether the user supplied an integer between 1 and 99:
+# -lt checks if the integer is 'less than' 1
+# -gt checks if the integer is 'greater than' 99
+# Returns true if the integer is less than 1 or greater than 99 
+elif [ $full -lt 1 ] || [ $full -gt 99 ]; then
+  echo "full% must be 1 to 99"
+  exit 1
+fi
+
+# Assign interval and mailint variables to 2 and 10, respectively
+interval=2
+mailint=10
+
+# Initialize an array named 'fs' with paths to the monitored filesystems: '/', '/boot', and '/tmp'
+# These are the locations where disk usage will be checked
+fs=('/' '/boot' '/tmp')
+
+# The 'checksize' function checks the size of the specified filesystem and compares it to the threshold ($full).
+# It does not have explicit arguments but relies on $1 and $2 passed implicitly.
+# $1 is expected to be an index, and $2 is the path of the filesystem to check.
+checksize ()
+{
+   # Run the 'df' command with the filesystem path ($2) as the argument
+   # Extract the last line using 'tail -1' and print the first column (device name) using 'awk'
+   # Store the device name associated with the filesystem in the 'dev' variable
+   dev=`df $2 | tail -1 | awk '{print $1}'`
+
+   # Check if the 'dev' variable is empty using the -z flag
+   # If empty, it indicates an error in determining disk usage for the specified filesystem
+   # Terminate the script with the 'exit' command
+   if [ -z "$dev" ]; then
+      echo "Error determining disk usage for $2"
+      exit 1
+   fi
+
+   # This loop iterates through all elements of the 'devlist' array, which contains device names ($dev)
+   # associated with the filesystems ($2).
+   # If a match is found (device has already been processed), it returns 1
+   # It is intended to prevent redundant processing, but it is not implemented correctly
+   for d in ${devlist[*]}; do
+     if [ "$d" == "$dev" ]; then
+       return 1
+     fi
+   done
+   # Append the device name to the 'devlist' array to track processed devices
+   devlist+=$dev
+
+   # Extract the disk usage percentage from the 'df' command for the filesystem ($2)
+   # Store it in the 'usage' variable
+   # Check if the usage percentage exceeds the threshold ($full)
+   # The '${usage::-1}' removes the last character (the '%' sign) from 'usage' for comparison
+   # If true, add the usage percentage to the 'alert' array
+   # Also, calculate the time difference between the current timestamp and the last timestamp
+   # If the difference is greater than or equal to the mail interval ($mailint), set 'mailit' to 1
+   usage=`df $2 | tail -1 | awk '{print $5}'`
+   if [ ${usage::-1} -gt $full ]; then
+      alert[$1]=$usage
+      dt=$(( $now - ${last[$1]} ))
+      if [ $dt -ge $mailint ]; then 
+         mailit=1
+      fi
+   fi
+}
+
+# Initialize an array 'last' to store timestamps for each filesystem
+# The ${fs[@]} loops through all elements of the array fs and ! references to the indices of the array
+for i in ${!fs[@]}; do
+   last[$i]=0
+done
+
+# The script enters an infinite loop that runs continuously:
+# - Get the current timestamp in seconds and store it in the 'now' variable
+# - Reset variables and arrays for each iteration (mailit, alert, devlist)
+while [ 1 ]; do
+   now=`date +%s`
+   mailit=
+   alert=()
+   devlist=()
+
+   # Loop through the indices of the 'fs' array and call the 'checksize' function for each filesystem
+   # Pass the index ($1) and the path of the filesystem ($2) as arguments
+   for i in ${!fs[*]}; do
+      checksize $i ${fs[$i]}
+   done
+
+   # Check if the 'mailit' variable is non-empty with the -n flag (indicating disk usage exceeded the threshold)
+   if [ -n "$mailit" ]; then
+      # Print a notification that an email is being sent along with the current timestamp
+      echo "Mail sent " `date`
+
+      # Create a message describing the disk space warning including the hostname
+      msg="Disk space warning $HOSTNAME"
+
+      # Iterate through the indices of the 'alert' array, which contains full filesystem alerts
+      # Update the 'last' array with the current timestamp for the corresponding alert
+      # Append filesystem-specific alert details to the message
+      # The ${!..} is used to iterate through the indices of the array instead of elements
+      for i in ${!alert[*]}; do
+         last[$i]=$now
+         msg="$msg\n${fs[$i]} is ${alert[$i]} full"
+      done
+
+      # Use the 'mail' command to send the email message with the subject "Disk Space Warning" 
+      # to the specified recipient ($mailto) using the '-s' option for the email subject
+      echo -e "$msg" | mail -s "Disk Space Warning $HOSTNAME" $mailto
+   fi
+
+   # Sleep for the specified interval ($interval in seconds) before the next iteration 
+   sleep $interval
+done
+
