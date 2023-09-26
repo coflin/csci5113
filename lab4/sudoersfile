@@ -1,0 +1,17 @@
+#Host Aliases
+Host_Alias MACHINEE = 10.21.32.2
+Host_Alias DMZMACHINES = 100.64.26.2,100.64.26.3,100.64.26.4,100.64.26.6
+
+#Command Aliases
+Cmnd_Alias SHUTDOWN_CMDS=/usr/sbin/shutdown -h [1-9][2-9][0-9], /usr/sbin/shutdown -h [2-9][0-9][0-9]
+Cmnd_Alias CANCEL_CMDS=/usr/sbin/shutdown -c
+Cmnd_Alias CHOWN_CMD=/usr/bin/chown [a-zA-Z0-9_/]*, !/usr/bin/chown *\:root *, !/usr/bin/chown root\:* *, !/usr/bin/chown root *
+
+#Grant Dwight full access on all machines
+dschrute ALL=(ALL) ALL
+
+#Grant Michael access to shutdown on B,C,D,F machines
+mscott DMZMACHINES=(ALL) SHUTDOWN_CMDS, CANCEL_CMDS
+
+#Grant Jim access to chown on Machine E
+jhalpert MACHINEE=(ALL) CHOWN_CMD
