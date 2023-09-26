@@ -7,5 +7,6 @@ while read line;
 do
 	username=$(echo $line | awk '{print $1}')
 	usermod -s /bin/bash $username
+	chown -R $username /home/$username
 done < ~/lab3/employees
 usermod abernard -G sales
