@@ -1,0 +1,59 @@
+apt-get install apache2
+
+#checked that localhost on the website doesn't work. 
+#Checked firewall rules:
+apt-get install ufw
+ufw app list
+
+#checked www (opens only 80 port for unfiltered web traffic). Since 
+#we do not have SSL configured, i allowed this. 
+ufw allow www
+
+#check apache2 status
+systemctl status apache2
+#and then entered the IP address in the website and voila! Got the Apache screen.
+
+#Created 3 domains under /var/www
+mkdir -p {dundermifflin.com, michaescottpapercompany.com, schrutefarms.com}
+
+#Changed permissioning to world readable and executable for the above 3 domains
+chmod 770 {the company names}
+
+#created an index.html basic website and stored it in dundermifflin.com
+#created a dundermifflin.com.conf file and added config
+vim /etc/apache2/sites-available/dundermifflin.com.conf
+
+#to propogate changes and enable the website
+a2ensite dundermifflin.com.conf
+a2dissite 000-default.conf
+apache2ctl configtest
+
+#it showed that the global config wasn't set with the server name error.
+
+echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+
+#checked if the config is ok now
+apache2ctl configtest
+
+
+--------------------------------------------------------------------
+#For RedHat Apache Installation
+yum install httpd
+
+#Start the Apache process manually
+systemctl start httpd
+
+#Verify the status
+systemctl status httpd
+
+#If the service is active, you're good.
+#Open 100.64.26.4 on your browser. Voila! Got the default apache web page.
+
+#rsync-ed all files from C to D to /var/www/html
+rsync -avz --delete root@100.64.26.3:"/var/www/html" /var/www/
+#The reason why it is /var/www is because the entire directory html would get copied to /var/www/html/html. That's not what we want. 
+
+ 
+
+
+

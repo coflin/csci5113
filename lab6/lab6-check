@@ -1,0 +1,49 @@
+#!/bin/bash
+
+export SSHPASS="roomtoor"
+
+gethostname(){
+	hostname=$(sshpass -e ssh root@100.64.26.$1 hostname | awk -F[e.] '{print $2}')
+	echo "${hostname^^}"
+}
+
+checkaccess(){
+	user=$1
+	exitcode=$2
+	usersaccess=(${@:3})
+	if [[ "${usersaccess[@]}" =~ "$user" ]];then
+        	if [[ $exitcode == 0 ]]; then
+                	echo -e "\e[32m1:$user \e[1mcan login\e[0m"
+                else
+                	echo -e "\e[31m0:$user should be able to login\e[0m"
+               	fi
+        else
+        	if [[ $exitcode == 0 ]];then
+                	echo -e "\e[31m0:$user should not be able to login\e[0m"
+                else
+                        echo -e "\e[32m1:$user \e[1mcannot login\e[0m"
+                fi
+        fi
+}
+
+users=("mscott" "jhalpert" "dschrute" "pbeesly" "abernard" "plapin" "shudson" "amartin" "omartinez" "kmalone" "dphilbin" "kkapoor" "tflenderson" "mpalmer" "cbratton" "snir8112")
+
+for ip in {1..6};do
+	[[ $ip == 5 ]] && continue
+	usersaccess=("snir8112" "dschrute" "mscott")
+	hostname=$(gethostname $ip)
+	echo "Machine $hostname"
+	for user in ${users[@]};do
+		sshpass -e ssh -q $user@100.64.26.$ip hostname > /dev/null
+		exitcode=$?
+		case $hostname in
+			C | D)
+				usersaccess+=("pbeesly" "abernard" "kkapoor");;
+			F)
+				accounting=$(getent group accounting | awk -F: '{print $4}' | sed -e 's/,/ /g')
+				usersaccess+=${accounting[@]};;
+		esac
+		checkaccess $user $exitcode ${usersaccess[@]}
+	done
+	echo "..."
+done
