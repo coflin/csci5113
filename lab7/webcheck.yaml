@@ -1,0 +1,90 @@
+- hosts: machinec
+  become: yes
+  tasks:
+    - name: Ensure Apache2 service is running
+      service:
+        name: apache2
+        state: started
+      register: apache_service
+
+    - name: Check if Apache2 service is enabled to start on boot
+      command: systemctl is-enabled apache2
+      register: apache_enabled
+      changed_when: false
+
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+      become: yes
+
+    - name: Check the available Apache2 version
+      apt:
+        name: apache2
+        state: latest
+      register: apache_update
+
+    - name: Display Apache2 service status
+      debug:
+        msg: "Apache2 service is {{ apache_service.state }}"
+
+    - name: Display if Apache2 service is enabled on boot
+      debug:
+        msg: "Apache2 service is {{ 'enabled' if apache_enabled.stdout == 'enabled' else 'not enabled' }}"
+
+    - name: Display message if Apache2 is not up to date
+      fail:
+        msg: "Apache2 is not up-to-date. Please update."
+      when: "'The following packages have been kept back' in apache_update.stdout | default('')"
+
+    - name: Display message if Apache2 is up-to-date
+      debug:
+        msg: "Apache2 is already at the latest version."
+      when: "'The following packages have been kept back' not in apache_update.stdout | default('')"
+
+- hosts: machined
+  become: yes
+  tasks:
+    - name: Ensure httpd service is running
+      service:
+        name: httpd
+        state: started
+      register: httpd_service
+      changed_when: false
+
+    - name: Check if httpd service is enabled to start on boot
+      command: systemctl is-enabled httpd
+      register: httpd_enabled
+      changed_when: false
+
+    - name: Display httpd service status
+      debug:
+        msg: "httpd service is {{ httpd_service.state }}"
+
+    - name: Display if httpd service is enabled on boot
+      debug:
+        msg: "httpd service is {{ 'enabled to start on boot' if httpd_enabled.stdout == 'enabled' else 'not enabled to start on boot' }}"
+
+
+    - name: Check for available updates for httpd
+      command: yum list --updates httpd
+      register: updates_output
+      failed_when: false
+      changed_when: false
+
+    - name: Check for available packages for httpd
+      command: yum list --available httpd
+      register: available_output
+      failed_when: false
+      changed_when: false
+
+    - name: Check update status for httpd
+      block:
+        - name: Display update status for httpd
+          debug:
+            msg: "httpd package is up to date"
+          when: updates_output.rc != 0 and available_output.rc != 0
+        - name: Display update status for httpd
+          debug:
+            msg: "httpd package is not up to date"
+          when: updates_output.rc == 0 or available_output.rc == 0
+      ignore_errors: yes

@@ -1,0 +1,51 @@
+#!/bin/bash
+echo -e "- hosts: saclass\n  become: yes\n  tasks:" >> dmusers.yaml
+usersarray=($(cat /etc/passwd | tail -n 16 | awk -F: '{print $1}'))
+for user in ${usersarray[@]}; do
+	[[ $user == "snir8112" ]] && continue;
+	uid=$(cat /etc/passwd | grep $user | awk -F: '{print $3}')
+	gecos=$(cat /etc/passwd | grep $user | awk -F: '{print $5}')
+	home=$(cat /etc/passwd | grep $user | awk -F: '{print $6}')
+	shell=$(cat /etc/passwd | grep $user | awk -F: '{print $7}')
+	group=$user
+	groups=$(groups $user | awk -F: '{split($2, a, " "); print a[2]}')
+	echo -e "    - name: Update user attributes for $user" >> dmusers.yaml
+	echo -e "      user:
+        name: "$user"
+        uid: "$uid"
+        comment: $gecos
+        home: "$home"
+        group: $user
+        groups: $groups
+        append: yes
+        shell: "$shell"
+        create_home: yes
+" >> dmusers.yaml
+done
+
+echo -e "- hosts: rocky\n  become: yes\n  tasks:" >> dmusers.yaml
+echo -e "    - name: Update user attributes for snir8112 (Rocky Linux)" >> dmusers.yaml
+echo -e "      user:
+        name: snir8112
+        uid: 6015
+        comment: "Sneha Irukuvajjula"
+        home: "/home/snir8112"
+        groups: snir8112,wheel
+        append: yes
+        shell: "/bin/bash"
+        create_home: yes
+" >> dmusers.yaml
+
+echo -e "- hosts: debian\n  become: yes\n  tasks:" >> dmusers.yaml
+echo -e "    - name: Update user attributes for snir8112 (Debian)" >> dmusers.yaml
+echo -e "      user:
+        name: "snir8112"
+        uid: 6015
+        comment: "Sneha Irukuvajjula"
+        home: "/home/snir8112"
+        groups: snir8112,sudo
+        append: yes
+        shell: "/bin/bash"
+        create_home: yes
+" >> dmusers.yaml
+

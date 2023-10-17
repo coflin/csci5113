@@ -1,0 +1,211 @@
+- hosts: saclass
+  become: yes
+  tasks:
+    - name: Update user attributes for mscott
+      user:
+        name: mscott
+        uid: 6000
+        comment: Michael Scott
+        home: /home/mscott
+        group: mscott
+        groups: managers
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for jhalpert
+      user:
+        name: jhalpert
+        uid: 6001
+        comment: Jim Halpert
+        home: /home/jhalpert
+        group: jhalpert
+        groups: managers
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for dschrute
+      user:
+        name: dschrute
+        uid: 6002
+        comment: Dwight Schrute
+        home: /home/dschrute
+        group: dschrute
+        groups: managers
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for pbeesly
+      user:
+        name: pbeesly
+        uid: 6003
+        comment: Pam Beesly
+        home: /home/pbeesly
+        group: pbeesly
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for abernard
+      user:
+        name: abernard
+        uid: 6004
+        comment: Andy Bernard
+        home: /home/abernard
+        group: abernard
+        groups: sales
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for plapin
+      user:
+        name: plapin
+        uid: 6005
+        comment: Phyllis Lapin
+        home: /home/plapin
+        group: plapin
+        groups: sales
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for shudson
+      user:
+        name: shudson
+        uid: 6006
+        comment: Stanley Hudson
+        home: /home/shudson
+        group: shudson
+        groups: sales
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for amartin
+      user:
+        name: amartin
+        uid: 6007
+        comment: Angela Martin
+        home: /home/amartin
+        group: amartin
+        groups: accounting
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for omartinez
+      user:
+        name: omartinez
+        uid: 6008
+        comment: Oscar Martinez
+        home: /home/omartinez
+        group: omartinez
+        groups: accounting
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for kmalone
+      user:
+        name: kmalone
+        uid: 6009
+        comment: Kevin Malone
+        home: /home/kmalone
+        group: kmalone
+        groups: accounting
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for dphilbin
+      user:
+        name: dphilbin
+        uid: 6010
+        comment: Darryl Philbin
+        home: /home/dphilbin
+        group: dphilbin
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for kkapoor
+      user:
+        name: kkapoor
+        uid: 6011
+        comment: Kelly Kapoor
+        home: /home/kkapoor
+        group: kkapoor
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for tflenderson
+      user:
+        name: tflenderson
+        uid: 6012
+        comment: Toby Flenderson
+        home: /home/tflenderson
+        group: tflenderson
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for mpalmer
+      user:
+        name: mpalmer
+        uid: 6013
+        comment: Meredith Palmer
+        home: /home/mpalmer
+        group: mpalmer
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Update user attributes for cbratton
+      user:
+        name: cbratton
+        uid: 6014
+        comment: Creed Bratton
+        home: /home/cbratton
+        group: cbratton
+        groups: 
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+- hosts: rocky
+  become: yes
+  tasks:
+    - name: Update user attributes for snir8112 (Rocky Linux)
+      user:
+        name: snir8112
+        uid: 6015
+        comment: Sneha Irukuvajjula
+        home: /home/snir8112
+        groups: snir8112,wheel
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+- hosts: debian
+  become: yes
+  tasks:
+    - name: Update user attributes for snir8112 (Debian)
+      user:
+        name: snir8112
+        uid: 6015
+        comment: Sneha Irukuvajjula
+        home: /home/snir8112
+        groups: snir8112,sudo
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+

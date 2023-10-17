@@ -1,0 +1,10 @@
+- hosts: saclass
+  become: yes
+  tasks:
+    - name: Copy umask.sh to /etc/profile.d/
+      copy:
+        src: /etc/profile.d/umask.sh
+        dest: /etc/profile.d/umask.sh
+        owner: root
+        group: root
+        mode: "0644"
