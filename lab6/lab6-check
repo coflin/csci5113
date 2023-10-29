@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export SSHPASS="roomtoor"
+export SSHPASS="<password>"
 
 gethostname(){
 	hostname=$(sshpass -e ssh root@100.64.26.$1 hostname | awk -F[e.] '{print $2}')
