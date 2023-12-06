@@ -1,0 +1,118 @@
+This assignment was locked Sep 12 at 8am.
+Reading
+
+Command Line Basics (The Linux Command Line Links to an external site.Chapters 1-4)
+Unix and Linux System Administration Handbook 5ed:  Shell Scripts (Sections 7.1-7.4)
+
+Preparation
+
+The vi editor is the universal editor for Unix and Linux systems.  It will be available on every Unix/Linux box you will conceivable access.  While there are many alternative editors, you need to be familiar with vi because it may be your only option until you have recovered a broken machine.
+
+The vim editor improves upon the vanilla vi editor by adding lots of features.  What is helpful for this assignment is the color syntax highlighting.  Install vim for Rocky Linux using
+
+sudo dnf install vim
+For Debian the installation is
+
+sudo apt-get install vim
+For FreeBSD the command is
+
+sudo pkg install vim
+You can set an alias to run vim when you type via as alias vi=vim.
+
+You should practice using vi or vim to build muscle memory.
+
+Assignment
+
+1.  Dashboard
+
+Create a bash script called dashboard that when run form the command line, and provides a report containing the following information:
+
+System uptime
+CPU load average
+Free RAM and swap
+All network interfaces and the IP address of each
+Whether you can ping 8.8.8.8
+The total number of users in /etc/passwd
+The number of users currently logged in
+The number of users in /etc/passwd for each login shell other than nologin
+The number of directories, files and symbolic links in /boot
+The exact same program should run on Rocky 9 and Debian 12.  For 5113 students the program must also run on FreeBSD 13.
+
+Useful commands for this assignment are uptime, free, find, ping, ip addr, ifconfig, ping, grep, awk, sed, wc, sort, uniq and echo.
+
+How I will check this script by logging into each of your machines as root and running it as
+/root/dashboard
+The script should output the required information to stdout and then exit.  Here is an example of what the output may look like.  The format does not to be exactly this, but close.  Specifically, what I do not want is just the raw output of the commands.  You need to work on extracting just the relevant values and displaying it neatly.
+
+Uptime: 5:26
+CPU Load Average: 0.03, 0.07, 0.10
+Free RAM:  22881 MB
+Swap used: 0 MB
+
+Interface Address
+enp4s0     192.168.11.80
+lo         127.0.0.1
+wlp6s0     192.168.111.197
+Internet Connectivity: Yes
+
+User Accounts
+Total users: 52
+Active users: 2
+
+Shells          Users
+/bin/bash           2
+/bin/false          5
+/bin/sh             1
+/bin/sync           1
+
+Filesystem /boot 
+Total number of Files:       302
+Total number of Links:       4
+Total number of Directories: 5
+2. Disk Check
+The diskcheckLinks to an external site. script checks the disk usage of the /, /boot and /tmp file systems.  When the usage exceeds a specified percentage, it generates an alert email.  The alert email is repeated whenever a new file system exceeds the specified limit, or after a specified period.  For debugging, the file system usage is tested every 2 seconds and an email is generated every 10 seconds.  In production the test would probably be run say once a minute and the repeat emails say every few hours.
+
+The script takes two parameters, the email address to which the alert should be sent to, and the percentage (an integer from 1 to 99) to use as the alert level.  The script runs until interrupted by Ctrl-C.
+
+The assignment is to determine what the program does, and how it does it.  What you should submit is a commented version of the script that describes in detail what it does.  For example, for the lines
+
+elif [[ ! $full =~ ^[0-9]+ ]]; then
+   echo "The full% is not a number"
+the comment should not be Check if $full is a number, but instead I am looking for an explanation of the syntax like Check whether the user supplied an integer parameter by using the [[ extended expression to match digits 0-9 repeated one or more times.  The ! inverts the expression to return true if the match fails.
+
+Note that normally comments in a script would assume that the user knows the syntax and instead have comments that describe what you are trying to do, not how you are doing it.  For this assignment, I want to see that you understand both the what and how.  For the dashboard script in part 1, your comments should be how you would comment production code, i.e. only what your are trying to do, not a description of the syntax.
+
+What to submit:
+The submission for this lab is the dashboard script from part 1, your commented diskcheck script from part 2, and a README file indicating the number of hours you spent on this assignment.
+
+Canvas will only accept a tar archive for this submission.  Create this tar archive using the command
+
+tar cf lab2.tar dashboard diskcheck README
+Canvas appends your name and other information to the file when I download it, so only call this archive lab2.tar, nothing else.
+
+Hints:
+
+On Unix and Linux, case matters.  The file names must be all lower case.
+Do not alter the names of the files by adding a .sh or .txt or similar extension.  Watch for editors on Windows and OSX that add extentions and then hide them.
+Use the #! header to execute the appropriate interpreter or shell.  For portability, I provide /bin/bash on the FreeBSD machine as well.
+Any trailing characters on the #! line are passed to the interpreter as command line parameters.  Watch out for trailing junk on that line, especially hidden junk like a ^M (carriage return).
+Make sure that the dashboard script is the exact same on all the your machines because I will check that it is.  It may be convenient to edit on Machine A and then use scp to copy it to the other 6.  Be sure to test that it runs correctly on all your machines.  I must be able to run it as /root/dashboard.
+FreeBSD continues to use older utilities from many functions.  For example, FreeBSD uses ifconfig to configure interfaces while Rocky and Debian instead uses the ip command.  The better solution to deal with such differences is to check for the existence of a command, e.g.
+if [ -e /sbin/ifconfig ]; then
+instead of testing for the operating system. It is generally a bad idea to have a giant "if" that executes a completely different set of commands depending on what the OS is.  Instead you should check for the existence of specific commands and use an alternate only if that particular command does not exist.
+You can run diskcheck on the VMs but only root@localhost will likely work.  There is a primitive mail reader called mail that you can use to read the email.  On debian machines, email to root is sent to the user mail, so to read that mail use mail -u mail.   Email to any other local or remote user will most likely be rejected.
+Rubrik
+
+Evaluation	Points
+Same files	10
+Uptime	10
+Load	5
+Free RAM	5
+Swap	5
+Interfaces	5
+Connectivity	5
+User Accounts	5
+Shells	5
+Files/links/dirs	5
+diskcheck	40
+Total	100
