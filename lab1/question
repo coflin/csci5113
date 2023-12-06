@@ -1,0 +1,32 @@
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+   History of system administration  (p. 1166)
+
+Preparation
+
+Each of the labs will require you to perform various system administration tasks on the vSphere VMs.  I will grade your work by running an automated grading script that will access your VMs and check that it is configured correctly.
+
+You may also find it expedient to have a VM on your local machine where you can try out things before applying it to the "production" machines.  Use Oracle's free VirtualboxLinks to an external site. to install local copies of Rocky 9Links to an external site., Debian 12Links to an external site. and FreeBSD 13Links to an external site. that can be a sandbox environment for your personal use.  This will save you lots of headaches in the long run.  Virtualbox runs on Apple silicon, but bear in mind that Virtualbox is an hypervisor, not a virtual machine, so you must install a version of each operating system that works with your hardware.
+
+Assignment
+
+Review the Dunder Mifflin scenario to familiarize yourself with the virtual environment.
+Install the CU VPN and access the vSphere environment as describe here.
+Determine your N number.
+Figure out how to access the ssh client on your local machine.
+Log into each of the seven machines as root and change the root password.  The command would typically be, for example, ssh root@100.64.N.3 to log into Machine C.
+Copy the /etc/hosts file from each of the seven machines to your local machine using the scp command.  The command to do this for Machine B would be something like
+scp root@100.64.N.2:/etc/hosts hosts-b
+Since the file name is the same on all machines, you should append the machine identifier to the file name as shown above.
+Hints:
+
+In the above examples, replace N with your specific number.
+The command to update the password from the command line is passwd.
+What to submit:
+
+Your submission should be a single page showing everything asked for below.  Figure out how to include screen shots/images in Canvas.  DO NOT submit an external link.
+Your own notes about accessing the machines.  Here I am looking for a paragraph or so documenting what you did.  It should have sufficient detail that somebody could use your notes to access your machines without referring to my instructions.
+A screen shot of the terminal on your local machine (i.e. your desktop or laptop) showing you copying the /etc/hosts file from Machine B to your local machine.
+The contents of the /etc/hosts files for all 7 machines.
+Approximately how long it took you to complete the assignment.
