@@ -1,0 +1,79 @@
+This assignment was locked Oct 3 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+   Installing Packages:  Sections 6.2-6.5
+  Web servers:  Chapter 19
+  Periodic processes:  Section 4.9
+
+Apache 2.4 DocumentationLinks to an external site.
+
+Background
+
+Instead of using the ISP to host the Dunder-Mifflin web site, Michael Scott has directed you to host the Dunder-Mifflin web site on Machine C in the DMZ.
+
+As part of the agreement for Dunder-Mifflin to acquire the Michael Scott Paper Company, Dunder-Mifflin also hosted the web site of the now defunct Michael Scott Paper Company.
+
+Dwight Schrute has convinced Michael that all the websites at the ISP must be moved together, so the server should also host the Schrute Farms web site because that is how web sites work.
+
+The ISP has emailed you the files for the Dunder Mifflin, Michael Scott Paper Company and Schrute Farms web sites.
+
+Assignment
+
+Install an Apache server on Machine C.
+Configure Apache to have virtual hosts for Dunder-Mifflin (www.dundermifflin.com), the Michael Scott Paper Company (www.michaelscottpapercompany.com) and Schrute Farms (www.schrutefarms.com).
+Configure Apache to accept both the full hostname and omitting the leading www.  So, for example both www.dundermifflin.com and dundermifflin.com should work.
+Pam Beesly, Kelly Kapoor and Andy Bernard must be able to add and edit files served by the web server but only on the Dunder Mifflin web server.  Dwight Schrute should have similar privileges on the Schrute Farms web server.  (Dwight has sudo access, but should not need to use it.)
+The DocumentRoot for each of the sites must be /var/www/html/site were the site must match the name as received from the ISP.  For example, the Dunder Mifflin site should have a DocumentRoot of  /var/www/html/dundermifflin.
+Students in 5030 & 5113:  Configure Machine D as a backup web server.  Use cron and rsync on Machine D to update the html files from Machine C every 5 minutes.
+Extra credit:
+
+Create a CGI script that will report the number of files and disk space used by each of the three web sites.  Configure it so that I can access it as http://www.dundermifflin.com/cgi-bin/diskusage (no extension).  The output should look like this
+Disk Usage
+Site	Files	Size
+dundermifflin.com	294	4.3M
+michaelscottpapercompany.com	287	4.3M
+schrutefarms.com	6	84K
+Restrict access to this CGI script so that it requires a user name and password by using the Apache Authorization module.  Set the user name to webmaster and the password to dm23 (both user name and password all lower case).  Restrict access to this CGI script to only the dundermifflin.com domain.
+Graduate students:  Add mirroring of the CGI script to machine D.
+Bonus Extra Credit
+
+Create a script named webcheck (no extensions, select the interpreter using the #! line) to check that you satisfy all the requirements of the assignment.  The output from the script should be verbose and indicate what it checked and whether the test passed or failed. Include both the script and the output from the script in your writeup.
+Graduate students must also check the backup web server.
+Hints:
+
+Test that your system behaves as required by checking that you can retrieve the pages using Apache, including those created by Pam, Andy and Kelly.  Make sure they can read and modify existing files and files created by others in this group without having to run chmod.  This is exactly what the grading script will do.
+Since these are virtual web servers, Apache relies on the hostname to decide what site to serve.  Therefore you must make up an artificial DNS entry to point at your web servers.  On Linux/Unix/OSX you can do this by adding an temporary entries in your /etc/hosts file or simply use curl as shown in Hint 3.
+100.64.N.3  www.dundermifflin.com dundermifflin.com
+100.64.N.3  www.michaelscottpapercompany.com michaelscottpapercompany.com
+100.64.N.3  www.schrutefarms.com schrutefarms.com
+Caching by a web browser can complicate testing.  You can avoid it by using a program like curl.  You can also readily test virtual servers by adding the resolv flag
+curl --resolv www.schrutefarms.com:80:100.64.N.3 http://www.schrutefarms.com/index.html
+curl --resolv www.dundermifflin.com:80:100.64.N.3 http://webmaster:dm22@www.dundermifflin.com/cgi-bin/diskusage
+Students in 5030 and 5113:  Think carefully about the interaction of previous requirements with this assignment.  For example, how does umask and rsync interact?  Use only rsync, not a script to mess with permissions.
+Do not attempt to mirror the configuration files, only the content of the web sites.
+Pam, Andy and Kelley will only modify files on Machine C.
+Reboot machines C and D to make sure that your changes are permament.
+I will use the dreaded grading script to verify the requirements.  If you, for example, use a different DocumentRoot, the script will fail which will lead to significant deductions.
+When you hear hooves, think horses not zebras. File access can be readily addressed using the Unix permissions.  Don't immediately jump to more exotic approaches such as Access Control Lists.
+What to Submit:
+
+Your notes and scripts used to install and configure the servers.
+Your thinking behind how you allowed users to add and modify files for the web server.  (A paragraph or so.)
+Notes on how you tested your web servers.
+The approximate time it took to complete the assignment.
+Rubrik
+
+Evaluation	4113	5030	5113
+Apache running and enabled	10	10	10
+Web Site Access	20	20	20
+Web Site Alias	10	10	10
+Users can create files	15	10	10
+Apache can read user files	15	10	10
+Group can modify files	15	10	10
+Others cannot modify files	15	10	10
+Backup web site running and enabled	---	10	10
+Backup web site access	---	10	10
+Extra credit	20	20	20
+Bonus credit	20	20	20
+Total	100	100	100
