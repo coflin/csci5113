@@ -1,0 +1,47 @@
+Lab 11: NFS and NTP
+Due Dec 4 by 11:59pm Points 100 Submitting a file upload File Types pdf Available until Dec 5 at 8am
+This assignment was locked Dec 5 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+    Chapter 21: NFS.
+
+Background
+
+The folks in the accounting department have been clamoring to be allowed to post information to the Dunder-Mifflin web site, but the people managing the web site do not trust them with editing rights on the web site.
+
+Your compromise is to provide a directory /home/accounting/www on Machine E with the same permissions (rwxrws---) as /home/accounting and group accounting which which will be exported from Machine E using NFS and mounted on Machine C as /var/www/html/dundermifflin/accounting.
+
+To make sure everything remains in sync, you make Machine A a Stratum 2 NTP server by syncing it to the two NIST servers, and then synchronize time on Machines B-F to Machine A.
+
+Assignment
+
+Apply any corrections needed to past homeworks so that the group accounting exists on all machines with the appropriate members.
+Apply any corrections needed to past homeworks so that the DocumentRoot for the dundermifflin web site is /var/www/html/dundermifflin and that the web site correctly serves up the existing content.  Students in 5113 and 5030, make sure that the backup web server is correctly synchronized.
+Install chrony on all RedHat machines and enable systemd-timesyncd on all Debian machines.
+Configure chrony on Machine A to be a NTP client that uses only time-a-wwv.nist.gov and time-a-b.nist.gov as time references, and an NTP server for only machines on the DMZ and LAN networks.
+Update DHCP and as appropriate other configuration files so that Machines B-F use only Machine A as the NTP time server.
+Install an NFS server on Machine E and export /home/accounting/www to only the machines in the DMZ.  Use export options rw, sync, root_squash, no_all_squash.
+Install an NFS client on Machine C and mount the directory exported by Machine E as /var/www/html/dundermifflin/accounting so that any files in that directory is accessible via the web server.  For example, the file on Machine E (/home/accounting/www/foo.html) should be acessible as http://www.dundermifflin.com/accounting/foo.html.  Use the ro and soft options for this mount.
+Student in 5113 and 5030:  Make sure that the backup web server mirror the primary in such a way that files from Machine E are immediately available on both web servers.
+Extra credit (25%):  Set up the automounter to use a direct map to mount the /var/www/html/dundermifflin/accounting directory from Machine E only when the contents of that directory is being accessed.
+Hints
+
+Make sure that you fix errors from previous homeworks before starting on this homework.  Review my feedback and make sure that you fix all the problems.  Commands like usermod and groupmod provides a quick and easy way of fixing misnamed users and groups.  Simply running ansible will likely cause conflicts if you don't first remove conflicting UIDs and GIDs.
+Make sure you use the correct DocumentRoot for the web servers.
+The file server storing the files control ownership.  The SetGID on Machine E and umask on Machine E will allow anyone in the accounting group to create files, edit the files created by another member in the accounting group, but nobody else must have any access to the /home/accounting/www directory or files on Machine E (other access=---).  However, on Machine C (and D), the web server must have access to display the files in this directory.  (Do not over think this - the solution is trivial).
+Students in 5113 and 5030:  Make sure the rsync to Machine D correctly deals with this new directory.
+Check that all six machines will tolerate a reboot.
+What to submit.
+
+I will again use my dreaded grading script to test whether the NTP source for each machine is correct and that the appropriate people can create and edit files on Machine E, and that the files are accessible via the web servers, and for correct NTP settings.
+Submit your notes on how you accomplished the tasks as a PDF, including the time spent on this assignment.
+Rubrik
+Evaluation	Points
+/home/accounting/www	25
+Retrieve files from web servers	25
+Mount options	10
+Export options	15
+NTP	25
+Automount	25
+Total	100
