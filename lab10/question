@@ -1,0 +1,73 @@
+Lab 10: DNS
+Due Nov 13 by 11:59pm Points 100 Submitting a file upload File Types pdf Available until Nov 14 at 8am
+This assignment was locked Nov 14 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+    Chapter 16: DNS.
+
+Background
+
+Your next step in upgrading the network is to host your own DNS server to allow the symbolic names of the servers to be used instead of using IP addresses.  The following is the table of resource records you compiled
+
+Name	IP Address or Name	Record Type	TTL
+router.dundermifflin.com.	100.64.0.N	A	1 hour
+dmz.dundermifflin.com.	100.64.N.1	A	1 hour
+dns0.dundermifflin.com.	100.64.N.2	A	1 hour
+web0.dundermifflin.com.	100.64.N.3	A	1 hour
+web1.dundermifflin.com.	100.64.N.4	A	1 hour
+lan.dundermifflin.com.	10.21.32.1	A	1 hour
+nfs.dundermifflin.com.	10.21.32.2	A	1 hour
+dns1.dundermifflin.com.	100.64.N.6	A	1 hour
+bsd.dundermifflin.com	100.64.N.7	A	1 hour
+machinea.dundermifflin.com.	router.dundermifflin.com.	CNAME	7 days
+machineb.dundermifflin.com.	dns0.dundermifflin.com.	CNAME	7 days
+machinec.dundermifflin.com.	web0.dundermifflin.com.	CNAME	7 days
+machined.dundermifflin.com.	web1.dundermifflin.com.	CNAME	7 days
+machinee.dundermifflin.com.	nfs.dundermifflin.com.	CNAME	7 days
+machinef.dundermifflin.com.	dns1.dundermifflin.com.	CNAME	7 days
+machinex.dundermifflin.com	bsd.dundermifflin.com	CNAME	7 days
+dundermifflin.com.	web0.dundermifflin.com.	CNAME	5 minutes
+www.dundermifflin.com.	web0.dundermifflin.com.	CNAME	5 minutes
+www1.dundermifflin.com.	web1.dundermifflin.com.	CNAME	5 minutes
+dns.dundermifflin.com.	dns0.dundermifflin.com.	CNAME	5 minutes
+files.dundermifflin.com.	nfs.dundermifflin.com.	CNAME	7 days
+For the SOA record, the master name for the zone should be dns0.dundermifflin.com, the responsible administrator should be you, the serial today's date as yyyymmdd, the refresh one day, retry one hour, expire one week and negative cache one hour.
+
+Your NS records should point to all the DNS servers you configure.
+
+Assignment
+
+On all machines, make sure that dig and nslookup are installed for testing and grading.
+On Machined B, install the BIND DNS server and configure it as an authoritative server for the dundermifflin.com. domain, reverse DNS for the DMZ and LAN networks and recursive for everything else.
+All names in the table above must be valid, point to the proper location, with the appropriate record type and time to live. The TTL for reverse DNS should match the forward DNS for the A records. The default TTL must be one hour.
+Allow recursive DNS only from the LAN and DMZ.
+Modify the DHCP server and Machine A so that all Dunder-Mifflin machines use only your DNS server(s) to resolve DNS.
+Students in 5113 and 5030: Configure a secondary DNS server on Machine F to serve the same zones as Machine B. Use the mechanisms built into DNS to synchronize machine F to Machine B. Use both servers to resolve DNS on all machines.
+Extra credit (50%): Configure the DNS server(s) for split DNS. The configuration described above should ONLY be served to machines on your LAN or DMZ subnets. Add a second (external) view that will be authoritative for the dundermifflin.com domain but exclude any references to the LAN. For this external view also do reverse DNS for only the DMZ, and non-recursive for everything else. Students in 5113 and 5030 must also propagate the view to Machine F.
+Hints
+
+Before starting this lab, fix any errors from the DHCP lab.
+Test your DNS configration using dig and nslookup by explicitly specifying the DNS server to use.
+There is one CNAME in the above list that is not going to work. Figuring out the solution to this issue is part of the assignment.
+A recursive public DNS server is a very bad idea. Limiting recursion to only your machines is very important.
+The extra credit is intended to hide the detail of your LAN from the outside world, without adding a second DNS server for your internal use.
+To test the extra credit, also use your laptop to test from an "outside" (i.e. VPN) address.
+Once DNS is working, make sure you switch all the machines to use only your DNS server(s).
+If you break DNS, ssh will be very slow to log in. Make sure that does not happen.
+Check that all six machines will tolerate a reboot.
+What to submit.
+
+I will again use my dreaded grading script to test whether DNS responds correctly. I will basically call dig many times from various machines and check for the correct response. Unreachable machines will result in a large deduction.
+Submit your notes on how you accomplished the tasks as a PDF, including the time spent on this assignment.
+Rubrik.
+
+Evaluation	4113	5030	5113
+Search path	10	10	10
+Nameservers	10	10	10
+Local recursion only	10	10	10
+DNS0 resource records	70	50	50
+DNS1 resource records	---	20	20
+DNS0 views	50	25	25
+DNS1 views	---	25	25
+Total	100	100	100
