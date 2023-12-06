@@ -1,0 +1,51 @@
+This assignment was locked Oct 31 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+   Storage: Chapter 20
+
+Background
+
+You have received a few ‘friendly’ e-mails from ‘management’ complaining that the they are unable to save the hillarious videos they downloaded from the internet on Machined E because the disk is full.
+
+You have obtained some SATA drives and attached them to Machine E.  (Students in 4113 and 5030 will find one unused drive /dev/sdb attached to Machine E.  Students in 5113 will see four unused drives /dev/sdb, /dev/sdc, /dev/sdd and /dev/sde.)  You decide to use the LVM to add more flexibility to your configuration of the machine and use the new drive to expand /tmp and /home on Machine E.
+
+Assignment
+
+On Machined E, create a single Linux LVM partition on each of the new drives.  The partition should use all of the recommended space available.
+Graduate students:  Create a Linux software RAID array using the the four disks.
+Create a volume group named savg that uses all the newly added storage.
+Create a logical volume tmp that is 1GB in size and create an ext4 file system on it.
+Create a logical volume home that fills 80% of the remainder of the newly added storage and create an xfs file system on it.
+Permanently add the new /tmp and /home filesystems to the root file system.  Use the nodev, nosuid and noexec mount options for /tmp and the nodev mount option for /home.
+Extra credit (20%):  Implement quotas on /home to limit the amount of storage that any Dunder-Mifflin employee may use to a soft limit of 1000MB, a hard limit of 1200MB and a grace period of 1 day.  Apply the same limits to the managers, accounting and sales groups.
+Hints
+
+You could use the entire disk for your physical volume or RAID array, but if you partition each disk and label it as a Linux LVM, the probability that you will accidentally trash the system is reduced.  You do give up a small percentage of the available disk storage in the process.  In this assignment, it is therefore required that you create the physical volume or RAID array in a partition instead of simply using the raw disk.
+Double and triple check the device references when creating partitions and file systems.  Inattention to detail on that step can ruin your entire day.  D.F.I.U.
+Be very careful when editing /etc/fstab.  Errors in /etc/fstab will hang the machine.
+After completing the assignment, reboot the machine to make sure it boots cleanly and that your changes are permanent.
+Make sure that your accomplish the intended goal of freeing up space on the root drive of Machine E.
+Make sure that you do not change things like time stamps or file permissions in the home directories.
+What to submit.
+
+I will again use my dreaded grading script to test whether your Machine E correctly implements this assignment.  Do not be creative in naming users, groups, volume groups, logical volumes, etc.  The usermod and groupmod commands provide simple solutions to fixing issues from previous assignments.
+Submit your notes on how you accomplished the tasks as a PDF.
+Students in 5113:  Provide a justification for the RAID system you chose to implement (in the same PDF).  I am looking for a well reasoned choice, about a paragraph or so of why you chose this particular RAID system for this application.
+The approximate time it took to complete the assignment (in the same PDF).
+Rubrik
+
+Evaluation	4113	5030	5113
+Partition	10	10	10
+RAID	---	---	20
+Physical Volume	10	10	5
+Volume Group	10	10	5
+Logical Volumes	15	15	10
+File Systems	15	15	10
+Mount Options	10	10	10
+Blocks freed on /	10	10	10
+/home on new disk	20	20	20
+User quotas	8	8	8
+Group quotas	8	8	8
+Grace period	4	4	4
+Total	100	100	100
