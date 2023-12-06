@@ -1,0 +1,65 @@
+This assignment was locked Sep 19 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+   User Management (Sections 8.1-8.8)
+   File types, attributes and permissions (Sections 5.3-5.6)
+   Root access (Sections 3.1-3.3)
+
+Prerequisites
+
+Review the Dunder Mifflin Scenario and familiarize yourself with the network and employees.
+
+Make sure you can access the machines via ssh so that you can scp scripts to and from your machines.  Doing this assignment from the console will be very difficult.  To access Machine E via ssh, you first need to ssh to Machine A and from there ssh to Machine E.
+
+Assignment
+
+Write a script to create logins for all Dunder Mifflin employees on all machines.  Students in 4113 and 5030 only need to apply this script on the Linux Machines A-F.  Students in 5113 must also use it on the FreeBSD Machine X.
+
+I will use an automated grading script to evaluate your work so make sure that for all employees you use the exact username shown in the scenario.  For your own username, use your identikey login.
+
+Requirements:
+
+Each user should have a username and user private group of the form first-initial last-name, password, unique uid, unique gid, /path/to/login/shell, and /path/to/home/directory/.  The grading script is very strict about user names and groups, so use exactly the names shown in the table at the bottom of the scenario.  The Gecos field should have their name.
+User information and passwords must be the same on all machines.
+Home directories must exist for all users.  Home directory names must match the user name.  All home directories on all machines must be initialized with the contents of /etc/skel/ and owned by the appropriate user and user-private-group.
+Permissions for home directories must be read, write and execute for the owner and no access for the group or others.
+Create secondary groups named managers, sales, and accounting.  Add the appropriate users to these groups based on the org chart.  Managers are those persons with manager in their title, not others that may have supervisory duties.
+Create a shared directory under /home/ on the file server (Machine E) for each secondary group you created, with permissions such that only the owner and members of the group can read, write, and execute files.  New files and folders created under these shared directories must inherit the group id of the parent directory, not that of the process that creates them.
+Machine E has some existing user directories and files that should be integrated into this assignment with appropriate ownership and permissions.  Do not copy these files to other machines.
+Add the system administrator (you) to the wheel or sudo groups so that you can run commands using sudo.
+Adjust the umask on all machines so that, when new directories are created, the owner can read, write, and execute, the group can read, write and execute, and others have no access.
+Hints:
+
+It would be expedient to have the Dunder-Mifflin employees have a unique range of UIDs, say 3000-3999.
+The script should not simply be a long sequence of commands.  Use functions and loops to perform repetitive tasks.
+You may want to create scripts to add all the users to a machine and another to remove these users so that you can experiment, but be careful about existing files on Machine E.
+You may want to use you Virtualbox machines to try things out first.
+Use scp to move your scripts around - things can go awry with cut and paste.
+You can set the default umask by adding one file, instead of modifying existing files.  Read the header of the /etc/bashrc file on Rocky 9 machines.
+If you resort to ACLs to accomplish any of these tasks, you are totally missing the point.
+What to submit:
+
+I will use my access to your machines to evaluate that I can log in to each machine as different users.  I have a dirty trick to do that regardless of the passwords you assign.  The grade is largely based on the results of the grading script.
+Submit via Canvas your notes and scripts you used to complete the assignment, and approximate time used. Learn how to include screenshots on Canvas. Do not send me a link to a file.
+The approximate time it took to complete the assignment.
+Rubrik
+
+Evaluation	Points
+Users exist on all machines	5
+User private groups exist on all machines	5
+Same UID on all machines	5
+Same GID on all machines	5
+Same home directory on all machines	5
+Same shell on all machines	5
+User directory owner and group	5
+/etc/skel files in home directories	10
+Existing files in home directories	10
+Secondary groups on machine E	5
+Secondary group ownership	5
+Secondary group permissions	5
+Create and edit group files	5
+Excluded from group files	5
+Umask	10
+Writeup	10
+Total	100
