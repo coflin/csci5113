@@ -1,0 +1,406 @@
+Instructions
+There are 30 questions.  You have 2 minutes per question, and 10 minutes to review your answers.
+
+This exam is open notes. open textbook and open Internet
+You may not collaborate with anyone else during the exam
+You may not converse or text with anyone other than the instructional staff during the exam
+You may not utilize sites such as Chegg, CourseHero, ChatGPT, etc.
+You may not use GroupME, Google Docs or any other communications or chat sites.
+This quiz was locked Oct 24 at 3:30pm.
+Attempt History
+Attempt	Time	Score
+LATEST	Attempt 1	69 minutes	96 out of 120
+Score for this quiz: 96 out of 120
+Submitted Oct 24 at 3:10pm
+This attempt took 69 minutes.
+ 
+Question 1
+4 / 4 pts
+In LVM, which statement best describes the relationship among volume group, logical volume, and filesystem (such as ext4 and xfs)?
+
+Select one:
+
+  A volume group contains multiple disks, and a logical volume contains multiple physical volumes. 
+  A logical volume contains multiple volume groups, and a volume group contains a single filesystem. 
+Correct!
+  A volume group contains one or more physical volumes and a logical volume contains a single filesystem. 
+  A physical volume contains multiple disks, and a logical volume contains multiple volume groups. 
+ 
+Question 2
+4 / 4 pts
+What does the following command do to the existing files in /usr?
+
+# mount /dev/sdb1 /usr
+Select one:
+
+  The are moved to /dev/sdb1. 
+  They remain accessible. 
+Correct!
+  They are hidden until /dev/sdb1 is unmounted. 
+  They are deleted. 
+ 
+Question 3
+4 / 4 pts
+Which three file descriptors does every Linux process inherit at birth?
+Select one:
+  fd1, fd2, fd3 
+  tty0, stty0, pty0 
+Correct!
+  stdin, stdout, stderr 
+  display, input, error 
+ 
+Question 4
+4 / 4 pts
+What starts the system daemon (systemd) in Linux?
+Select one:
+  The bootloader 
+  Scripts in /etc/rc.d 
+Correct!
+  The kernel 
+  GRUB 
+ 
+Question 5
+4 / 4 pts
+Which of the following is the least essential to running Linux?
+Select one:
+  The kernel 
+  The various shells (bash, sh, csh, ksh, etc.) 
+  The various text editors (vi, vim, emacs, ed, nano) 
+Correct!
+  The useradd and userdel command 
+ 
+Question 6
+4 / 4 pts
+What is a systemd target?
+Select one:
+  A systemd target manages a daemon 
+  A systemd target manages a mount 
+Correct!
+  A systemd target manages a collection of units 
+  A systemd target manages a physical volume 
+ 
+Question 7
+4 / 4 pts
+Which of the following are false about /etc/shadow?
+Select one or more:
+  !! and * in the password (password hash, really) field mean the account is locked. 
+  The date the password last changed is stored in days since the Unix epoch. 
+Correct!
+  An empty password field (password hash, really) is a syntax error. 
+  The minimum password age describes how many days users must wait before they are allowed to change their password. 
+ 
+Question 8
+0 / 4 pts
+Which process is the ancestor of all Unix/Linux processes?
+Select one:
+  logind 
+  vmlinuz 
+Correct Answer
+  systemd 
+You Answered
+  initrd 
+ 
+Question 9
+4 / 4 pts
+If the current shell's umask is 022, what mode will new files (not directories) be created with?
+Select one:
+  777 
+  022 
+  744 
+Correct!
+  644 
+ 
+Question 10
+4 / 4 pts
+What does the command
+
+setcap cap_net_raw=ep filecopy
+do?
+
+Select one:
+
+  Alows very large files to be copied by the filecopy command 
+  Allows files with holes to copied by the filecopy command 
+  Removes the network speed cap from the filecopy command 
+Correct!
+  Allows the program filecopy to access raw sockets. 
+ 
+Question 11
+4 / 4 pts
+Convert the following numeric filemodes to their symbolic representation.
+Correct!
+644 
+rw- r-- r--
+Correct!
+755 
+rwx r-x r-x
+Correct!
+2777 
+rwx rws rwx
+Correct!
+6766 
+rws rwS rw-
+ 
+Question 12
+0 / 4 pts
+Which of the following pwquality.conf options will enforce a password quality of
+
+10 characters minimum and
+at least two digits and
+at least two special characters
+at least one upper case character and
+at least one lower case character
+
+Correct!
+  minlen = 10, dcredit = -2, ocredit = -2, ucredit = -1, lcredit = -1 
+  minlen = 12, dcredit = -2, ocredit = -2, ucredit = -1, lcredit = -1 
+  minlen = 10, dcredit = -2, ocredit = -2, lcredit=1, minclass = -4 
+You Answered
+  minlen = 10, dcredit = -2, ocredit = +2, minclass = 4 
+  minlen = 10, dcredit = 2, ocredit =-2, ucredit = 1, lcredit = 1 
+ 
+Question 13
+0 / 4 pts
+A one-line text file named mystuff.txt contains the following, including exactly one blank (ASCII 32=0x20) as the first character:
+
+ foo    bar    baz
+What is the result of the following command pipeline?
+
+$ cat mystuff.txt | cut -d" " -f2
+Select one:
+
+  A blank line 
+You Answered
+  bar 
+Correct Answer
+  foo 
+  baz 
+ 
+Question 14
+4 / 4 pts
+vi/vim does not edit a file directly.  It loads the target file into a buffer.  Edits affect only this buffer, not the disk file.
+
+Which command writes out the current buffer, and exits vi/vim?
+
+Select one:
+
+Correct!
+  :wq 
+  :sq 
+  pressing control + c or control + z 
+  :X 
+ 
+Question 15
+4 / 4 pts
+Given a umask of 003, what would the resulting permissions be on a newly created directory?
+
+Select one:
+
+  771 
+  770 
+Correct!
+  774 
+  773 
+ 
+Question 16
+4 / 4 pts
+What does the /dev directory in a Unix/Linux filesystem contain?
+Select one:
+  Special files that have been changed since the OS was installed 
+Correct!
+  Special files that interface to physical devices on the machine. 
+  Files that describe the state of the kernel 
+  Files that set the state of the kernel 
+ 
+Question 17
+0 / 4 pts
+What does the following command do?
+
+# mount /dev/sdb1 /mnt
+Select one:
+
+Correct Answer
+  Mounts the first partition of the second hard drive on the /mnt directory 
+You Answered
+  Mounts the logical volume /dev/sdb1 on /mnt 
+  Create a link in the folder /mnt to the file /dev/sdb1 
+  Copy the contents of /dev/sdb1 to /mnt 
+ 
+Question 18
+4 / 4 pts
+Based on the following line from /etc/shadow,
+
+fester::17233:0:30:3:7::
+On what date does linux...
+
+Correct!
+warn fester to change his password 
+Monday, April 4th, 2017
+Correct!
+make fester change his password 
+Thursday, April 7th, 2017
+Correct!
+not allow fester to login at all 
+Thursday, April 14th 2017
+ 
+Question 19
+4 / 4 pts
+What did Linus Torvalds originally create?
+Select one:
+Correct!
+  The Linux kernel 
+  The Linux operating system 
+  The GNU tools 
+  The standard Linux distribution and associated GNU tools 
+ 
+Question 20
+4 / 4 pts
+When you log in to Redhat/Rocky/Debian Linux, which statement below best matches the process of validating your credentials?
+Select one:
+  /bin/login directly reads the credentials in /etc/passwd and /etc/shadow and compares them with the ones entered 
+  /bin/login uses nss to get your username. Nss reads it from /etc/passwd; login then uses PAM to get the password for the username; then login compares the credentials with the ones entered 
+Correct!
+  /bin/login passes your username and password to PAM. PAM compares them with the credentials in /etc/passwd and /etc/shadow and returns a yes/no status code to /bin/login 
+ 
+Question 21
+4 / 4 pts
+What does the following command do?
+
+awk -F: '/mscott/ {print $4}' /etc/passwd
+Select one:
+
+Correct!
+  Prints the (integer) group id (GID) of user 'mscott' 
+  prints the home directory of user 'mscott' 
+  
+Prints the (integer) user id (UID) of user 'mscott'
+
+  Prints the comment (GECOS) field of user 'mscott' 
+ 
+Question 22
+4 / 4 pts
+Which of the following are not found in /etc/passwd?
+Select one or more:
+Correct!
+  effective user ID (EUID) 
+  user ID (uid) 
+Correct!
+  secondary group id number(s) 
+  primary (or default, or login) group id number (gid) 
+  GECOS field 
+ 
+Question 23
+0 / 4 pts
+What does the following command do?
+
+$ sed -i 's/earth/mostly harmless/' theguide
+Select one:
+
+Correct!
+  It replaces the first occurrence of the word 'earth' with the words 'mostly harmless' on each line in a file named 'theguide' 
+  It searches the file named 'theguide' for the words 'earth', and 'mostly harmless' - if it finds any, it prints their locations in the file to stdout 
+  It replaces all occurrences of the words 'mostly harmless' on every line of the file named 'theguide' with the word 'earth' 
+You Answered
+  It replaces all occurrences of the word 'earth' with the words 'mostly harmless' on every line of the file named 'theguide' 
+ 
+Question 24
+4 / 4 pts
+Pam Beesly needs to be able to reboot the web server with any time delay she chooses, but she should not be allowed to halt the server.  The following line in the /etc/sudoers file on the web server will implement this policy
+
+pbeesly ALL=(ALL) /sbin/shutdown -r *
+  True 
+Correct!
+  False 
+ 
+Question 25
+4 / 4 pts
+When does the following crontab entry run the command /usr/local/sbin/backup
+
+* 6 * * 1 root /usr/local/sbin/backup
+
+Select one:
+
+  6:00am on Sunday morning 
+  6:00am on Monday morning 
+Correct!
+  Every minute from 6:00am to 6:59am on Monday morning 
+  6:00am on the first day of the month 
+ 
+Question 26
+4 / 4 pts
+From what file does sshd read the public key for a user that is allowed to log into this machine by providing a private key instead of a password?
+
+Select one:
+
+  ~/.ssh/id_rsa 
+  ~/.ssh/id_rsa.pub 
+Correct!
+  ~/.ssh/authorized_keys 
+  ~/.ssh/known_hosts 
+ 
+Question 27
+0 / 4 pts
+The commands
+
+ssh -L 2222:machinef:22 machinea
+and
+
+scp -Cp -P2222 localhost:foo bar
+executed on the local machine does the following:
+Select one:
+
+ 
+
+You Answered
+  Copies the file foo on the local machine to bar on machinea 
+  Copies the file foo on machinef to bar on machinea 
+Correct Answer
+  Copies the file foo on machinef to bar on the local machine 
+  Copies the file foo on the local machine to bar on machinef 
+ 
+Question 28
+4 / 4 pts
+What command would you use to determine which package installed the /usr/bin/dig program on Machine A in the Dunder-Mifflin cluster?
+
+Select one:
+
+  rpm -ql /usr/bin/dig 
+  dpkg -S /usr/bin/dig 
+Correct!
+  rpm -qf /usr/bin/dig 
+  dnf search /usr/bin/dig 
+ 
+Question 29
+4 / 4 pts
+Consider the output from the following commands:
+
+$ id
+uid=3004(pbeesly) gid=3004(pbeesly) groups=3004(pbeesly),4004(dmweb)
+$ umask
+0017
+$ ls -ld .
+drwxrws--- 12 www-data dmweb 4096 Sep 27 09:36 .
+$ touch foo
+$ ls -l foo
+What is the output from the last ls command?
+Select one:
+
+  ls: cannot access 'foo': No such file or directory 
+  -rw-rw---- 1 pbeesly pbeesly 0 Oct 1 12:34 foo 
+  -rw-r----- 1 pbeesly dmweb 0 Oct 1 12:34 foo 
+  -rw-rw---- 1 www-data dmweb 0 Oct 1 12:34 foo 
+Correct!
+  -rw-rw---- 1 pbeesly dmweb 0 Oct 1 12:34 foo 
+ 
+Question 30
+4 / 4 pts
+What is the purpose of the become_user directive in an Ansible playbook?
+
+Select one:
+
+Correct!
+  Selects the user as which the task should be run. 
+  Selects the user as which to log in to the remote machine. 
+  Enables privilege escalation. 
+  Selects the method (sudo, su, runs, etc) by which privilege escalation should occur. 
+Quiz Score: 96 out of 120
