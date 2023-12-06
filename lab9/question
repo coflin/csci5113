@@ -1,0 +1,56 @@
+This assignment was locked Nov 7 at 8am.
+Reading
+
+Unix and Linux System Administration Handbook 5ed
+    Review Chapter 13 (Networking) in general, 13.7 (DHCP) and 13.10 (Linux Networking) specifically.
+
+Background
+
+You are planning to upgrade the network infrastructure, and want to make the process as painless as possible.  You start by changing all the servers to get their network configuration from Machine A.  Instead of the cryptic names like Machine X, you decide to assign functional names to the machines.
+
+The IP addresses of the machines should remain unchanged.
+
+Old Hostname	New Hostname	Purpose
+Machine A	router.dundermifflin.com	Main Router
+Machine B	dns0.dundermifflin.com	Primary DNS and NTP
+Machine C	web0.dundermifflin.com	Primary Web Server
+Machine D	web1.dundermifflin.com	Secondary Web Server
+Machine E	nfs.dundermifflin.com	File Server
+Machine F	dns1.dundermifflin.com	Secondary DNS
+Assignment
+
+On Machine A, install the ISC DHCP server and configure it to set the network configuration and new hostname for machines B-F.
+The lease time must be 10 minutes.
+All machines must use 128.138.240.1 and 128.138.130.30 as name servers and the domain name must be dundermifflin.com.
+The LAN and DMZ subnets must each have a DHCP pool were the last octet is in the range 100-199.
+Set the NTP servers to be time-a-wwv.nist.gov and time-a-b.nist.gov.
+Students in 5113 and 5030: Set the DHCP server to first send an ICMP Echo request to the address it is considering to dynamically allocate and wait 100 milliseconds for a reply.  If a reply is heard, the server must not respond and the lease must be abandoned for ten minutes.
+Configure Machines B-F to obtain their network configuration and hostname from Machined A using DHCP.
+Reboot Machines A-F in that order.
+Hints
+
+Machine A will continue to have its configuration statically assigned.
+For machines B-F, the default gateway should remain the appropriate interface on Machine A.
+Make sure Machines B-F sets all the network parameters using DHCP.  You may want to check it by temporarily using different settings.
+Settings shared by all subnets such as the NTP and DNS servers should be specified only once as a global entry.
+The DHCP pool will not be in use when only Machines B-F are connected to the network.  The pool will be used when additional devices connect.
+If you break the network settings, your machines will become unreachable.  If I cannot access a machine, that means 0 for that part of the assignment.  Make sure you can reach the internet from all six machines, and that you can access al the DMZ machines from the VPN.
+Double check that all six machines will tolerate a reboot.
+What to submit.
+
+I will again use my dreaded grading script to test whether your machines are configured correctly.  Unreachable machines will result in a large deduction.
+Submit your notes on how you accomplished the tasks as a PDF, including the time spent on this assignment.
+Rubrik.
+
+Evaluation	4113	5030	5113
+DHCP ACK	20	20	20
+Hostname	10	10	10
+IP and Netmask	10	10	10
+Gateway	10	10	10
+Search path	10	8	8
+Nameservers	10	8	8
+Lease time	10	8	8
+NTP servers	10	8	8
+DHCP pools	10	8	8
+Ping check	---	10	10
+Total	100	100	100
