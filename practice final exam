@@ -1,0 +1,18 @@
+I have shut down and disabled nftables on Machines B-F so that issues from Lab 12 will not effect this practice exam.
+
+Assignment:
+
+Fix machines A-F so that I can ssh in to them from the VPN.
+Ensure that
+dig @100.64.N.2 www.dundermifflin.com
+resolves correctly.
+Ensure that
+curl --resolv www.dundermifflin.com:80:100.64.N.3 http://www.dundermifflin.com/index.html
+returns the dundermifflin index page.
+At the end of the exam, power down all the machines.
+Hints:
+
+All six machines are broken in some way.
+Fix Machine A first.
+If you mount Machine E's export in the fstab of Machines C and D, you need to fix Machine E first.  If you cannot get Machine E up, remove the NFS mount point from C and D so that you can at least get C and D up.
+After you fixed each machine, reboot it to make sure it comes up clean.
