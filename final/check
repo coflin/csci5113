@@ -1,0 +1,66 @@
+#!/usr/bin/bash
+
+N=26
+
+function check {
+	M="Machine $1"
+	IP=$2
+	ping -W 1 -c 3 -i 0.1 $IP > /dev/null 2>/dev/null
+	if [ "$?" != "0" ]; then
+		echo "$M ping FAILED"
+	else
+		echo "$M ping OK"
+		ssh root@$IP hostname > /dev/null 2>/dev/null
+		if [ "$?" != 0 ]; then
+			echo "$M ssh FAILED"
+		else
+			echo "$M ssh OK"
+		fi
+	fi
+}
+
+#  Check connectivity
+check A 100.64.0.$N
+check B 100.64.$N.2
+check C 100.64.$N.3
+check D 100.64.$N.4
+#froma E 10.21.32.2
+check F 100.64.$N.6
+check X 100.64.$N.7
+
+echo "----------------------------------------------------------------------------------------------------------------------"
+
+#  Check DNS on B
+NS=`dig +time=1 +tries=1 @100.64.$N.2 www.dundermifflin.com | grep ^www.dundermifflin.com | grep CNAME | wc -l`
+if [ "$NS" == "1" ]; then
+	echo "Machine B DNS OK"
+else
+	echo "Machine B DNS FAILED"
+fi
+
+#  Check DNS on F
+NS=`dig +time=1 +tries=1 @100.64.$N.6 www.dundermifflin.com | grep ^www.dundermifflin.com | grep CNAME | wc -l`
+if [ "$NS" == "1" ]; then
+        echo "Machine F DNS OK"
+else
+        echo "Machine F DNS FAILED"
+fi      
+
+echo "--------------------------------------------------------------------------------------------------------------------------"
+
+#  Check Apache on C
+WC=`curl --silent --connect-timeout 1 --resolv www.dundermifflin.com:80:100.64.$N.3 http://www.dundermifflin.com/index.html | grep scranton | wc -l`
+if [ "$WC" == "18" ]; then
+	echo "Machine C WEB OK"
+else
+	echo "Machine C WEB FAILED"
+fi
+
+#  Check HTTPD on D
+WC=`curl --silent --connect-timeout 1 --resolv www.dundermifflin.com:80:100.64.$N.4 http://www.dundermifflin.com/index.html | grep scranton | wc -l`
+if [ "$WC" == "18" ]; then
+        echo "Machine D WEB OK"
+else
+        echo "Machine D WEB FAILED"
+fi
+
